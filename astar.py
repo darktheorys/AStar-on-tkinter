@@ -1,7 +1,4 @@
-
 from tkinter import Canvas, Frame, BOTH
-
-
 from tkinter import messagebox
 
 import random
@@ -9,16 +6,14 @@ import tkinter as tk
 import math
 
 
-HEIGHT, WIDTH = 720, 720
-ROW, COLUMN = 16, 16
-OFFSET = 16
-
-
+HEIGHT, WIDTH = 720, 1368
+ROW, COLUMN = 16, 32
+OFFSET = 8
 
 class Node():
     def __init__(self, i, j, canvas):
-        w_size = WIDTH // ROW
-        h_size = HEIGHT // COLUMN
+        w_size = WIDTH // COLUMN
+        h_size = HEIGHT // ROW
 
         x, y = j * w_size + OFFSET, i*h_size + OFFSET
         x2 = x + w_size - OFFSET
@@ -34,7 +29,7 @@ class Node():
         self.parent = None
         self.localGoal = float("inf")
         self.globalGoal = float("inf")
-        self.idx = ROW * i + j + 1
+        self.idx = COLUMN * i + j + 1
         self.lineid = None
         
         self.neighbors = []
@@ -93,8 +88,8 @@ class Node():
             self.canvas.itemconfig(self.idx, fill="gray")
             
     def click4(self, prev):
-        w_size = WIDTH // ROW
-        h_size = HEIGHT // COLUMN
+        w_size = WIDTH // COLUMN
+        h_size = HEIGHT // ROW
 
         x, y = self.j * w_size + OFFSET, self.i*h_size + OFFSET
         x2 = x + w_size - OFFSET
@@ -219,15 +214,15 @@ class UI(Frame):
                 self.nodes[current].visit()
             
             for i, j in self.nodes[current].neighbors:
-                neighbor = self.nodes[i*ROW + j]
+                neighbor = self.nodes[i*COLUMN + j]
                 if not neighbor.isVisited and not neighbor.isObstacle:
                     local_goal = distance(self.nodes[current], neighbor) + self.nodes[current].localGoal
                     if local_goal < neighbor.localGoal:
                         neighbor.parent = current
                         neighbor.localGoal = local_goal
                         neighbor.globalGoal = local_goal + distance(neighbor, self.nodes[self.target])
-                    self.nodes[i*ROW + j] = neighbor
-                    node_list.append(i*ROW + j)
+                    self.nodes[i*COLUMN + j] = neighbor
+                    node_list.append(i*COLUMN + j)
             if self.target in node_list and self.stopWhenFind:
                 break
             node_size = len(node_list)   
